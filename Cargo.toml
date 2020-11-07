@@ -1,0 +1,15 @@
+[package]
+name = "gooey"
+version = "0.1.0"
+authors = ["Chris Williams <diodesign@tuta.io>"]
+edition = "2018"
+
+# supported build targets - don't forget to update .cargo with details for the linker and runner when adding new ports
+[target.riscv32imac-unknown-none-elf.dependencies]
+supervisor = { path = "../supervisor-riscv" }
+
+[target.riscv64imac-unknown-none-elf.dependencies]
+supervisor = { path = "../supervisor-riscv" }
+
+[target.riscv64gc-unknown-none-elf.dependencies]
+supervisor = { path = "../supervisor-riscv" }
