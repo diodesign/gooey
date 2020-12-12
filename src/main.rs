@@ -7,6 +7,7 @@
 
  /* we're running in supervisor mode, not userland */
 #![no_std]
+#![no_main]
 
 /* provide a framework for unit testing */
 #![feature(custom_test_frameworks)]
@@ -17,7 +18,8 @@
 #[macro_use]
 extern crate supervisor;
 
-fn main()
+#[no_mangle]
+pub extern "C" fn main()
 {
     println!("hello world! I'm a system service");
 }
