@@ -20,5 +20,5 @@ use supervisor::stdio::Stdout;
 pub extern "C" fn main()
 {
     let mut stdout = Stdout::new();
-    write!(&mut stdout, "hello world! I'm a system service");
+    write!(&mut stdout, "hello world! I'm a system service\n");
 }
