@@ -5,7 +5,7 @@
  * See LICENSE for usage and copying.
  */
 
- /* we're running in supervisor mode, not userland */
+/* we're running in supervisor mode, not userland */
 #![no_std]
 #![no_main]
 #![allow(unused_must_use)]
