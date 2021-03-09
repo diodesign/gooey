@@ -30,6 +30,7 @@ use spin::Mutex;
 /* keep track of the output of capsules and the hypervisor */
 lazy_static!
 {
+    static ref INIT_DONE: Mutex<bool> = Mutex::new(false);
     static ref CAPSULE_STDOUT: Mutex<BTreeMap<usize, String>> = Mutex::new(BTreeMap::new());
     static ref HV_STDOUT: Mutex<String> = Mutex::new(String::new());
 }
@@ -154,18 +155,26 @@ fn get_user_input()
 #[no_mangle]
 pub extern "C" fn main(tid: usize)
 {
-    match sbi::register_service(sbi::DiosixServiceType::ConsoleInterface)
+    /* thread ID 0 will do all the initialization and then unlock other threads
+       when init is complete */
+    if tid == 0
     {
-        Ok(_) =>
+        if sbi::register_service(sbi::DiosixServiceType::ConsoleInterface).is_ok() == true
         {
             clear_screen();
             println!("System console user interface registered");
-        },
-        Err(e) =>
+            *(INIT_DONE.lock()) = true;
+        }
+        else
         {
-            println!("Failed to register system console user interface {:?}", e);
+            println!("Failed to register system console user interface");
             sbi::exit(1);
         }
+    }
+    else
+    {
+        /* wait until initialization is done */
+        while *(INIT_DONE.lock()) != true {}
     }
 
     loop
