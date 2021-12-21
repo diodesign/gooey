@@ -22,18 +22,13 @@ use alloc::collections::btree_map::Entry::{Occupied, Vacant};
 extern crate supervisor;
 use supervisor::sbi;
 
-#[macro_use]
-extern crate lazy_static;
-extern crate spin;
-use spin::Mutex;
+extern crate spinning;
+use spinning::{Mutex, Lazy};
 
 /* keep track of the output of capsules and the hypervisor */
-lazy_static!
-{
-    static ref INIT_DONE: Mutex<bool> = Mutex::new(false);
-    static ref CAPSULE_STDOUT: Mutex<BTreeMap<usize, String>> = Mutex::new(BTreeMap::new());
-    static ref HV_STDOUT: Mutex<String> = Mutex::new(String::new());
-}
+static INIT_DONE: Lazy<Mutex<bool>> = Lazy::new(|| Mutex::new(false));
+static CAPSULE_STDOUT: Lazy<Mutex<BTreeMap<usize, String>>> = Lazy::new(|| Mutex::new(BTreeMap::new()));
+static HV_STDOUT: Lazy<Mutex<String>> = Lazy::new(|| Mutex::new(String::new()));
 
 /* colors and escape codes taken from https://en.wikipedia.org/wiki/ANSI_escape_code */
 const COLOR_RED: usize = 31; /* Red is used for the hypervisor output */
